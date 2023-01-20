@@ -18,6 +18,7 @@ import (
 	"github.com/crossplane/crossplane/apis/secrets/v1alpha1"
 	tjcontroller "github.com/upbound/upjet/pkg/controller"
 	"github.com/upbound/upjet/pkg/terraform"
+	"go.uber.org/zap/zapcore"
 	"gopkg.in/alecthomas/kingpin.v2"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -26,7 +27,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	"github.com/haarchri/provider-opensearch/apis"
-	"github.com/haarchri/provider-opensearch/apis/v1alpha1"
+
 	"github.com/haarchri/provider-opensearch/config"
 	"github.com/haarchri/provider-opensearch/internal/clients"
 	"github.com/haarchri/provider-opensearch/internal/controller"
@@ -35,7 +36,7 @@ import (
 
 func main() {
 	var (
-		app              = kingpin.New(filepath.Base(os.Args[0]), "Terraform based Crossplane provider for ZPA").DefaultEnvars()
+		app              = kingpin.New(filepath.Base(os.Args[0]), "Terraform based Crossplane provider for opensearch").DefaultEnvars()
 		debug            = app.Flag("debug", "Run with debug logging.").Short('d').Bool()
 		syncPeriod       = app.Flag("sync", "Controller manager sync period such as 300ms, 1.5h, or 2h45m").Short('s').Default("1h").Duration()
 		leaderElection   = app.Flag("leader-election", "Use leader election for the controller manager.").Short('l').Default("false").OverrideDefaultFromEnvar("LEADER_ELECTION").Bool()
@@ -50,8 +51,8 @@ func main() {
 
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
-	zl := zap.New(zap.UseDevMode(*debug))
-	log := logging.NewLogrLogger(zl.WithName("provider-zpa"))
+	zl := zap.New(zap.UseDevMode(*debug), UseISO8601())
+	log := logging.NewLogrLogger(zl.WithName("provider-opensearch"))
 	if *debug {
 		// The controller-runtime runs with a no-op logger by default. It is
 		// *very* verbose even at info level, so we only provide it a real
@@ -109,4 +110,11 @@ func main() {
 
 	kingpin.FatalIfError(controller.Setup(mgr, o), "Cannot setup provider-opensearch controllers")
 	kingpin.FatalIfError(mgr.Start(ctrl.SetupSignalHandler()), "Cannot start controller manager")
+}
+
+// UseISO8601 sets the logger to use ISO8601 timestamp format
+func UseISO8601() zap.Opts {
+	return func(o *zap.Options) {
+		o.TimeEncoder = zapcore.ISO8601TimeEncoder
+	}
 }
