@@ -9,7 +9,12 @@ import (
 
 	"github.com/upbound/upjet/pkg/controller"
 
-	role "github.com/haarchri/provider-opensearch/internal/controller/elasticsearch/role"
+	template "github.com/haarchri/provider-opensearch/internal/controller/component/template"
+	templateindex "github.com/haarchri/provider-opensearch/internal/controller/index/template"
+	ismpolicy "github.com/haarchri/provider-opensearch/internal/controller/opensearch/ismpolicy"
+	ismpolicymapping "github.com/haarchri/provider-opensearch/internal/controller/opensearch/ismpolicymapping"
+	role "github.com/haarchri/provider-opensearch/internal/controller/opensearch/role"
+	rolesmapping "github.com/haarchri/provider-opensearch/internal/controller/opensearch/rolesmapping"
 	providerconfig "github.com/haarchri/provider-opensearch/internal/controller/providerconfig"
 )
 
@@ -17,7 +22,12 @@ import (
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
+		template.Setup,
+		templateindex.Setup,
+		ismpolicy.Setup,
+		ismpolicymapping.Setup,
 		role.Setup,
+		rolesmapping.Setup,
 		providerconfig.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {

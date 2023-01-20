@@ -9,7 +9,12 @@ import "github.com/upbound/upjet/pkg/config"
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
 var ExternalNameConfigs = map[string]config.ExternalName{
-	"elasticsearch_opensearch_role": config.IdentifierFromProvider,
+	"elasticsearch_opensearch_role":               config.IdentifierFromProvider,
+	"elasticsearch_opensearch_roles_mapping":      config.IdentifierFromProvider,
+	"elasticsearch_index_template":                config.IdentifierFromProvider,
+	"elasticsearch_opensearch_ism_policy":         config.IdentifierFromProvider,
+	"elasticsearch_opensearch_ism_policy_mapping": config.IdentifierFromProvider,
+	"elasticsearch_component_template":            config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

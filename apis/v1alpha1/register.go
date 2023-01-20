@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "opensearch.upbound.io"
+	Group   = "opensearch.crossplane.io"
 	Version = "v1alpha1"
 )
 
